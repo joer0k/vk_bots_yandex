@@ -1,6 +1,5 @@
-from datetime import datetime
-
 import vk_api
+
 from CONFIG import PASSWORD, LOGIN
 
 
@@ -44,14 +43,13 @@ def main():
         print(error_msg)
         return
     vk = vk_session.get_api()
-    # Используем метод wall.get
-    response = vk.wall.get(count=5, offset=0)
+    response = vk.friends.get(fields='bdate', order='name')
     if response['items']:
-        for i in response['items']:
-            time = datetime.fromtimestamp(i['date'])
-            print(i['text'])
-            print(f'date: {time.strftime('%Y-%m-%d')}, time: {time.strftime("%H:%M:%S")}')
-            print()
+        for friend in response['items']:
+            try:
+                print(f'{friend['last_name']} {friend["first_name"]} Дата рождения: {friend["bdate"]}')
+            except KeyError:
+                print(f'{friend['last_name']} {friend["first_name"]}')
 
 
 if __name__ == '__main__':
